@@ -57,14 +57,14 @@ import Data.Serialize as Cereal
 import Data.Data
 import Data.Distributive
 import Data.Foldable
-import Data.Functor.Bind
+import Data.Functor.Semimonad
 import Data.Functor.Classes
 import Data.Functor.Rep
 import Data.Hashable
 #if (MIN_VERSION_hashable(1,2,5))
 import Data.Hashable.Lifted
 #endif
-import Data.Semigroup.Foldable
+import Data.Semigroup.Semifoldable
 #if __GLASGOW_HASKELL__ >= 707
 import qualified Data.Vector as V
 import Linear.V
@@ -135,15 +135,15 @@ instance Finite V1 where
   fromV (V v) = V1 (v V.! 0)
 #endif
 
-instance Foldable1 V1 where
-  foldMap1 f (V1 a) = f a
-  {-# INLINE foldMap1 #-}
+instance Semifoldable V1 where
+  semifoldMap f (V1 a) = f a
+  {-# INLINE semifoldMap #-}
 
-instance Traversable1 V1 where
-  traverse1 f (V1 a) = V1 <$> f a
-  {-# INLINE traverse1 #-}
+instance Semitraversable V1 where
+  semitraverse f (V1 a) = V1 <$> f a
+  {-# INLINE semitraverse #-}
 
-instance Apply V1 where
+instance Semiapplicative V1 where
   V1 f <.> V1 x = V1 (f x)
   {-# INLINE (<.>) #-}
 
@@ -161,7 +161,7 @@ instance Additive V1 where
   liftI2 = liftA2
   {-# INLINE liftI2 #-}
 
-instance Bind V1 where
+instance Semimonad V1 where
   V1 a >>- f = f a
   {-# INLINE (>>-) #-}
 

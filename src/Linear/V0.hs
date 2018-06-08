@@ -52,7 +52,7 @@ import Data.Bytes.Serial -- bytes
 import Data.Data
 import Data.Distributive
 import Data.Foldable
-import Data.Functor.Bind
+import Data.Functor.Semimonad
 import Data.Functor.Classes
 import Data.Functor.Rep
 import Data.Hashable
@@ -146,7 +146,7 @@ instance Traversable V0 where
   traverse _ V0 = pure V0
   {-# INLINE traverse #-}
 
-instance Apply V0 where
+instance Semiapplicative V0 where
   V0 <.> V0 = V0
   {-# INLINE (<.>) #-}
 
@@ -164,7 +164,7 @@ instance Additive V0 where
   liftI2 _ V0 V0 = V0
   {-# INLINE liftI2 #-}
 
-instance Bind V0 where
+instance Semimonad V0 where
   V0 >>- _ = V0
   {-# INLINE (>>-) #-}
 

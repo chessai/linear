@@ -45,7 +45,7 @@ import Data.Complex (Complex)
 import Data.Data
 import Data.Distributive
 import Data.Foldable as Foldable
-import Data.Functor.Bind
+import Data.Functor.Semimonad
 import Data.Functor.Classes
 import Data.Functor.Rep as Rep
 import Data.HashMap.Lazy (HashMap)
@@ -146,7 +146,7 @@ ADDITIVEC(Dim n, (V n))
 newtype Point f a = P (f a)
   deriving ( Eq, Ord, Show, Read, Monad, Functor, Applicative, Foldable
            , Eq1, Ord1, Show1, Read1
-           , Traversable, Apply, Additive, Metric
+           , Traversable, Semiapplicative, Additive, Metric
            , Fractional , Num, Ix, Storable, Epsilon
            , Hashable
 #if __GLASGOW_HASKELL__ >= 702
@@ -235,10 +235,10 @@ unP :: Point f a -> f a
 unP (P x) = x
 {-# INLINE unP #-}
 
--- We can't use GND to derive 'Bind' because 'join' causes
+-- We can't use GND to derive 'Semimonad' because 'join' causes
 -- role troubles. However, GHC 7.8 and above let us use
 -- explicit coercions for (>>-).
-instance Bind f => Bind (Point f) where
+instance Semimonad f => Semimonad (Point f) where
 #if __GLASGOW_HASKELL__ >= 708
   (>>-) = ((P .) . (. (unP .))) #. (>>-) .# unP
 #else

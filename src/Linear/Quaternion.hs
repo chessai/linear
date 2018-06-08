@@ -61,7 +61,7 @@ import Data.Complex (Complex((:+)))
 import Data.Data
 import Data.Distributive
 import Data.Foldable
-import Data.Functor.Bind
+import Data.Functor.Semimonad
 import Data.Functor.Classes
 import Data.Functor.Rep
 import Data.Hashable
@@ -122,7 +122,7 @@ instance Functor Quaternion where
   a <$ _ = Quaternion a (V3 a a a)
   {-# INLINE (<$) #-}
 
-instance Apply Quaternion where
+instance Semiapplicative Quaternion where
   Quaternion f fv <.> Quaternion a v = Quaternion (f a) (fv <.> v)
   {-# INLINE (<.>) #-}
 
@@ -140,7 +140,7 @@ instance Additive Quaternion where
   liftI2 = liftA2
   {-# INLINE liftI2 #-}
 
-instance Bind Quaternion where
+instance Semimonad Quaternion where
   Quaternion a (V3 b c d) >>- f = Quaternion a' (V3 b' c' d') where
     Quaternion a' _          = f a
     Quaternion _ (V3 b' _ _) = f b
@@ -571,7 +571,7 @@ slerp q p t
 {-# SPECIALIZE slerp :: Quaternion Float -> Quaternion Float -> Float -> Quaternion Float #-}
 {-# SPECIALIZE slerp :: Quaternion Double -> Quaternion Double -> Double -> Quaternion Double #-}
 
--- | Apply a rotation to a vector.
+-- | Semiapplicative a rotation to a vector.
 rotate :: (Conjugate a, RealFloat a) => Quaternion a -> V3 a -> V3 a
 rotate q v = ijk where
   Quaternion _ ijk = q * Quaternion 0 v * conjugate q

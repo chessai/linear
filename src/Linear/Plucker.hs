@@ -66,12 +66,12 @@ import Data.Binary as Binary
 import Data.Bytes.Serial
 import Data.Distributive
 import Data.Foldable as Foldable
-import Data.Functor.Bind
+import Data.Functor.Semimonad
 import Data.Functor.Classes
 import Data.Functor.Rep
 import Data.Hashable
 import Data.Semigroup
-import Data.Semigroup.Foldable
+import Data.Semigroup.Semifoldable
 import Data.Serialize as Cereal
 #if __GLASGOW_HASKELL__ >= 707
 import qualified Data.Vector as V
@@ -121,7 +121,7 @@ instance Functor Plucker where
   fmap g (Plucker a b c d e f) = Plucker (g a) (g b) (g c) (g d) (g e) (g f)
   {-# INLINE fmap #-}
 
-instance Apply Plucker where
+instance Semiapplicative Plucker where
   Plucker a b c d e f <.> Plucker g h i j k l =
     Plucker (a g) (b h) (c i) (d j) (e k) (f l)
   {-# INLINE (<.>) #-}
@@ -141,7 +141,7 @@ instance Additive Plucker where
   liftI2 = liftA2
   {-# INLINE liftI2 #-}
 
-instance Bind Plucker where
+instance Semimonad Plucker where
   Plucker a b c d e f >>- g = Plucker a' b' c' d' e' f' where
     Plucker a' _ _ _ _ _ = g a
     Plucker _ b' _ _ _ _ = g b
@@ -193,15 +193,15 @@ instance Traversable Plucker where
     Plucker <$> g a <*> g b <*> g c <*> g d <*> g e <*> g f
   {-# INLINE traverse #-}
 
-instance Foldable1 Plucker where
-  foldMap1 g (Plucker a b c d e f) =
+instance Semifoldable Plucker where
+  semifoldMap g (Plucker a b c d e f) =
     g a <> g b <> g c <> g d <> g e <> g f
-  {-# INLINE foldMap1 #-}
+  {-# INLINE semifoldMap #-}
 
-instance Traversable1 Plucker where
-  traverse1 g (Plucker a b c d e f) =
+instance Semitraversable Plucker where
+  semitraverse g (Plucker a b c d e f) =
     Plucker <$> g a <.> g b <.> g c <.> g d <.> g e <.> g f
-  {-# INLINE traverse1 #-}
+  {-# INLINE semitraverse #-}
 
 instance Ix a => Ix (Plucker a) where
   range (Plucker l1 l2 l3 l4 l5 l6,Plucker u1 u2 u3 u4 u5 u6) =

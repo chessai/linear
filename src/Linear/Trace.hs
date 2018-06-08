@@ -36,7 +36,7 @@ import Data.Complex
 #endif
 import Data.Distributive
 import Data.Foldable as Foldable
-import Data.Functor.Bind as Bind
+import Data.Functor.Semimonad as Semimonad
 import Data.Functor.Compose
 import Data.Functor.Product
 import Data.Hashable
@@ -73,15 +73,15 @@ class Functor m => Trace m where
 #endif
 
 instance Trace IntMap where
-  diagonal = Bind.join
+  diagonal = Semimonad.join
   {-# INLINE diagonal #-}
 
 instance Ord k => Trace (Map k) where
-  diagonal = Bind.join
+  diagonal = Semimonad.join
   {-# INLINE diagonal #-}
 
 instance (Eq k, Hashable k) => Trace (HashMap k) where
-  diagonal = Bind.join
+  diagonal = Semimonad.join
   {-# INLINE diagonal #-}
 
 instance Dim n => Trace (V n)

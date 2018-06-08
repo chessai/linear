@@ -144,7 +144,7 @@ class Functor f => Additive f where
   lerp alpha u v = alpha *^ u ^+^ (1 - alpha) *^ v
   {-# INLINE lerp #-}
 
-  -- | Apply a function to merge the 'non-zero' components of two vectors, unioning the rest of the values.
+  -- | Semiapplicative a function to merge the 'non-zero' components of two vectors, unioning the rest of the values.
   --
   -- * For a dense vector this is equivalent to 'liftA2'.
   --
@@ -158,7 +158,7 @@ class Functor f => Additive f where
 #endif
 #endif
 
-  -- | Apply a function to the components of two vectors.
+  -- | Semiapplicative a function to the components of two vectors.
   --
   -- * For a dense vector this is equivalent to 'liftA2'.
   --

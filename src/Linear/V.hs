@@ -80,7 +80,7 @@ import Data.Complex
 import Data.Data
 import Data.Distributive
 import Data.Foldable as Foldable
-import Data.Functor.Bind
+import Data.Functor.Semimonad
 import Data.Functor.Classes
 import Data.Functor.Rep as Rep
 import Data.Hashable
@@ -271,7 +271,7 @@ instance TraversableWithIndex Int (V n) where
   itraverse f (V as) = V <$> itraverse f as
   {-# INLINE itraverse #-}
 
-instance Apply (V n) where
+instance Semiapplicative (V n) where
   V as <.> V bs = V (V.zipWith id as bs)
   {-# INLINE (<.>) #-}
 
@@ -282,7 +282,7 @@ instance Dim n => Applicative (V n) where
   V as <*> V bs = V (V.zipWith id as bs)
   {-# INLINE (<*>) #-}
 
-instance Bind (V n) where
+instance Semimonad (V n) where
   V as >>- f = V $ generate (V.length as) $ \i ->
     toVector (f (as `unsafeIndex` i)) `unsafeIndex` i
   {-# INLINE (>>-) #-}

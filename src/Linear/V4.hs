@@ -65,7 +65,7 @@ import Data.Bytes.Serial
 import Data.Data
 import Data.Distributive
 import Data.Foldable
-import Data.Functor.Bind
+import Data.Functor.Semimonad
 import Data.Functor.Classes
 import Data.Functor.Rep
 import Data.Hashable
@@ -75,7 +75,7 @@ import Data.Hashable.Lifted
 #if !(MIN_VERSION_base(4,11,0))
 import Data.Semigroup
 #endif
-import Data.Semigroup.Foldable
+import Data.Semigroup.Semifoldable
 import Data.Serialize as Cereal
 #if __GLASGOW_HASKELL__ >= 707
 import qualified Data.Vector as V
@@ -138,13 +138,13 @@ instance Traversable V4 where
   traverse f (V4 a b c d) = V4 <$> f a <*> f b <*> f c <*> f d
   {-# INLINE traverse #-}
 
-instance Foldable1 V4 where
-  foldMap1 f (V4 a b c d) = f a <> f b <> f c <> f d
-  {-# INLINE foldMap1 #-}
+instance Semifoldable V4 where
+  semifoldMap f (V4 a b c d) = f a <> f b <> f c <> f d
+  {-# INLINE semifoldMap #-}
 
-instance Traversable1 V4 where
-  traverse1 f (V4 a b c d) = V4 <$> f a <.> f b <.> f c <.> f d
-  {-# INLINE traverse1 #-}
+instance Semitraversable V4 where
+  semitraverse f (V4 a b c d) = V4 <$> f a <.> f b <.> f c <.> f d
+  {-# INLINE semitraverse #-}
 
 instance Applicative V4 where
   pure a = V4 a a a a
@@ -152,7 +152,7 @@ instance Applicative V4 where
   V4 a b c d <*> V4 e f g h = V4 (a e) (b f) (c g) (d h)
   {-# INLINE (<*>) #-}
 
-instance Apply V4 where
+instance Semiapplicative V4 where
   V4 a b c d <.> V4 e f g h = V4 (a e) (b f) (c g) (d h)
   {-# INLINE (<.>) #-}
 
@@ -164,7 +164,7 @@ instance Additive V4 where
   liftI2 = liftA2
   {-# INLINE liftI2 #-}
 
-instance Bind V4 where
+instance Semimonad V4 where
   V4 a b c d >>- f = V4 a' b' c' d' where
     V4 a' _ _ _ = f a
     V4 _ b' _ _ = f b

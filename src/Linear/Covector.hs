@@ -17,7 +17,7 @@ import Control.Applicative
 import Control.Monad
 import Data.Functor.Plus hiding (zero)
 import qualified Data.Functor.Plus as Plus
-import Data.Functor.Bind
+import Data.Functor.Semimonad
 import Data.Functor.Rep as Rep
 import Linear.Algebra
 
@@ -33,14 +33,14 @@ Covector f $* m = f (Rep.index m)
 instance Functor (Covector r) where
   fmap f (Covector m) = Covector $ \k -> m (k . f)
 
-instance Apply (Covector r) where
+instance Semiapplicative (Covector r) where
   Covector mf <.> Covector ma = Covector $ \k -> mf $ \f -> ma (k . f)
 
 instance Applicative (Covector r) where
   pure a = Covector $ \k -> k a
   Covector mf <*> Covector ma = Covector $ \k -> mf $ \f -> ma $ k . f
 
-instance Bind (Covector r) where
+instance Semimonad (Covector r) where
   Covector m >>- f = Covector $ \k -> m $ \a -> runCovector (f a) k
 
 instance Monad (Covector r) where
